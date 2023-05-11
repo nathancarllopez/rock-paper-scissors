@@ -48,23 +48,21 @@ function game() {
     }
 }
 
-const rockButton = document.querySelector('#rock');
-rockButton.addEventListener('click', function (e) {
+function buttonClick(playerSelection) {
+    document.querySelector('#player-selection').textContent = `Player chooses ${playerSelection}`
+
     const computerSelection = getComputerChoice();
-    const result = playRound('rock', computerSelection);
-    console.log(result);
-})
+    document.querySelector('#computer-selection').textContent = `Computer chooses ${computerSelection}`
+
+    const result = playRound(playerSelection, computerSelection);
+    document.querySelector('#results').textContent = `You ${result}`
+}
+
+const rockButton = document.querySelector('#rock');
+rockButton.addEventListener('click', () => buttonClick('rock'));
 
 const paperButton = document.querySelector('#paper');
-rockButton.addEventListener('click', function (e) {
-    const computerSelection = getComputerChoice();
-    const result = playRound('paper', computerSelection);
-    console.log(result);
-})
+paperButton.addEventListener('click', () => buttonClick('paper'));
 
 const scissorsButton = document.querySelector('#scissors');
-rockButton.addEventListener('click', function (e) {
-    const computerSelection = getComputerChoice();
-    const result = playRound('scissors', computerSelection);
-    console.log(result);
-})
+scissorsButton.addEventListener('click', () => buttonClick('scissors'));
