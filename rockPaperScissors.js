@@ -10,59 +10,75 @@ function getComputerChoice() {
     }
 }
 
-function playRound(playerSelection, computerSelection) {
+function playRound(playerSelection, computerSelection, scores) {
     if (playerSelection == computerSelection) {
         return 'tie';
     } else if ((playerSelection == 'rock' && computerSelection == 'paper') ||
                 (playerSelection == 'paper' && computerSelection == 'scissors') ||
                 (playerSelection == 'scissors' && computerSelection == 'rock')) {
+        scores["computer"]++;
         return 'lose';
     } else if ((playerSelection == 'rock' && computerSelection == 'scissors') ||
                 (playerSelection == 'paper' && computerSelection == 'rock') ||
                 (playerSelection == 'scissors' && computerSelection == 'paper')) {
+        scores["player"]++;
         return 'win';
     }
 }
 
-function game() {
-    let playerScore = 0;
-    let computerScore = 0;
-    const playerSelection = prompt("Enter 'rock', 'paper', or 'scissors'.");
-    const computerSelection = getComputerChoice();
-    const result = playRound(playerSelection, computerSelection);
-    if (result == 'lose') {
-        computerScore++;
-        alert(`Computer plays ${computerSelection} and you played ${playerSelection}.\nYou lose.`);
-    } else if (result == 'win') {
-        playerScore++;
-        alert(`Computer plays ${computerSelection} and you played ${playerSelection}.\nYou win.`);
-    } else {
-        alert(`Computer plays ${computerSelection} and you played ${playerSelection}.\nYou tie.`);
-    }
-    console.log("Here are the results:");
-    console.log(`You won ${playerScore} rounds, and the computer won ${computerScore} rounds.`)
-    if (playerScore > computerScore) {
-        console.log("You win this game!")
-    } else if (computerScore > playerScore) {
-        console.log("Better luck next time.")
-    }
-}
-
-function buttonClick(playerSelection) {
+function buttonClick(playerSelection, scores) {
     document.querySelector('#player-selection').textContent = `Player chooses ${playerSelection}`
 
     const computerSelection = getComputerChoice();
     document.querySelector('#computer-selection').textContent = `Computer chooses ${computerSelection}`
 
-    const result = playRound(playerSelection, computerSelection);
-    document.querySelector('#results').textContent = `You ${result}`
+    const result = playRound(playerSelection, computerSelection, scores);
+    document.querySelector('#results').textContent = `You ${result}`;
+    return result;
 }
 
-const rockButton = document.querySelector('#rock');
-rockButton.addEventListener('click', () => buttonClick('rock'));
+function game() {
+    const rockButton = document.querySelector('#rock');
+    rockButton.addEventListener('click', () => {
+        const result = buttonClick('rock', scores);
+        updateScore(result, scores);
+    });
 
-const paperButton = document.querySelector('#paper');
-paperButton.addEventListener('click', () => buttonClick('paper'));
+    const paperButton = document.querySelector('#paper');
+    paperButton.addEventListener('click', () => {
+        const result = buttonClick('paper', scores);
+        updateScore(result, scores);
+    });
 
-const scissorsButton = document.querySelector('#scissors');
-scissorsButton.addEventListener('click', () => buttonClick('scissors'));
+    const scissorsButton = document.querySelector('#scissors');
+    scissorsButton.addEventListener('click', () => {
+        const result = buttonClick('scissors', scores);
+        updateScore(result, scores);
+    });
+}
+
+function bestOfFive() {
+    let scores = {
+        'player': 0,
+        'computer': 0
+    }
+    document.querySelector('#player-score').textContent = `Your score: ${scores['player']}`;
+    document.querySelector('#computer-score').textContent = `Computer score: ${scores['computer']}`;
+    
+    while (scores["player"] < 5 && scores["computer"] < 5) game();
+
+    alert("game over");
+}
+
+const startButton = document.querySelector('#start');
+startButton.addEventListener('click', bestOfFive);
+
+function updateScore(result, scores) {
+    if (result == 'win') {
+        // scores["player"]++;
+        document.querySelector('#player-score').textContent = `Your score: ${scores['player']}`;
+    } else if (result == 'lose') {
+        // scores["computer"]++;
+        document.querySelector('#computer-score').textContent = `Computer score: ${scores['computer']}`;
+    }
+}
