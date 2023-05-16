@@ -38,40 +38,39 @@ function buttonClick(playerSelection, scores) {
 }
 
 function game() {
-    const rockButton = document.querySelector('#rock');
-    rockButton.addEventListener('click', () => {
-        const result = buttonClick('rock', scores);
-        updateScore(result, scores);
-    });
+    document.querySelector('#start').textContent = 'Start game';
 
-    const paperButton = document.querySelector('#paper');
-    paperButton.addEventListener('click', () => {
-        const result = buttonClick('paper', scores);
-        updateScore(result, scores);
-    });
-
-    const scissorsButton = document.querySelector('#scissors');
-    scissorsButton.addEventListener('click', () => {
-        const result = buttonClick('scissors', scores);
-        updateScore(result, scores);
-    });
-}
-
-function bestOfFive() {
     let scores = {
         'player': 0,
         'computer': 0
     }
     document.querySelector('#player-score').textContent = `Your score: ${scores['player']}`;
     document.querySelector('#computer-score').textContent = `Computer score: ${scores['computer']}`;
-    
-    while (scores["player"] < 5 && scores["computer"] < 5) game();
 
-    alert("game over");
+    const rockButton = document.querySelector('#rock');
+    rockButton.addEventListener('click', () => {
+        const result = buttonClick('rock', scores);
+        updateScore(result, scores);
+        determineWinner(scores);
+    });
+
+    const paperButton = document.querySelector('#paper');
+    paperButton.addEventListener('click', () => {
+        const result = buttonClick('paper', scores);
+        updateScore(result, scores);
+        determineWinner(scores);
+    });
+
+    const scissorsButton = document.querySelector('#scissors');
+    scissorsButton.addEventListener('click', () => {
+        const result = buttonClick('scissors', scores);
+        updateScore(result, scores);
+        determineWinner(scores);
+    });
 }
 
 const startButton = document.querySelector('#start');
-startButton.addEventListener('click', bestOfFive);
+startButton.addEventListener('click', game);
 
 function updateScore(result, scores) {
     if (result == 'win') {
@@ -80,5 +79,23 @@ function updateScore(result, scores) {
     } else if (result == 'lose') {
         // scores["computer"]++;
         document.querySelector('#computer-score').textContent = `Computer score: ${scores['computer']}`;
+    }
+}
+
+function determineWinner(scores) {
+    if (scores["player"] == 5) {
+        document.querySelector('#the-winner').textContent = 'You win!';
+        document.querySelector('#start').textContent = 'Restart game';
+        scores = {
+            'player': 0,
+            'computer': 0
+        };
+    } else if (scores["computer"] == 5) {
+        document.querySelector('#the-winner').textContent = 'You lose...';
+        document.querySelector('#start').textContent = 'Restart game';
+        scores = {
+            'player': 0,
+            'computer': 0
+        };
     }
 }
